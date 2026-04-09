@@ -278,4 +278,5 @@ tags
 
 # Input
 *.wav
+*.mp3
 input.txt

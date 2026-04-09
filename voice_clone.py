@@ -18,7 +18,7 @@ input_text = read_input()
 
 audio = model.generate(
     text=input_text,
-    ref_audio="ref.wav",
+    ref_audio="ref.mp3",
     language="vi"
 )
 
