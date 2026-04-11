@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from omnivoice import OmniVoice
 import torch
 import torchaudio
@@ -19,7 +21,13 @@ input_text = read_input()
 audio = model.generate(
     text=input_text,
     ref_audio="ref.mp3",
-    language="vi"
+    language="Vietnamese",
+    speed=0.9,
+    denoise=True,
+    num_step=64,
+    postprocess_output=True,
+    position_temperature=1,
+    class_temperature=1
 )
 
 torchaudio.save(f"voice-{dt.now().strftime("%Y%m%d%H%M%S")}.wav", audio[0], 24000)
