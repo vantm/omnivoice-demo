@@ -10,6 +10,13 @@ def read_input():
         text = f.read().strip()
         return text
 
+def get_ref_audio():
+    import sys
+    if len(sys.argv) > 1:
+        return sys.argv[1]
+    else:
+        return "ref.mp3"
+
 model = OmniVoice.from_pretrained(
     "k2-fsa/OmniVoice",
     device_map="cuda",
@@ -20,7 +27,7 @@ input_text = read_input()
 
 audio = model.generate(
     text=input_text,
-    ref_audio="ref.mp3",
+    ref_audio=get_ref_audio(),
     language="Vietnamese",
     speed=0.9,
     denoise=True,
