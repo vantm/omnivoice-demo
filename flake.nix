@@ -37,6 +37,10 @@
             cudaVersion = "12";
           };
         };
+        runtimeInputs = with pkgs; [
+          yt-dlp
+          ffmpeg
+        ];
       in
       {
         devShell =
@@ -51,6 +55,47 @@
                 cudatoolkit
                 cudaPackages.cudnn
                 cudaPackages.cuda_cudart
+                (pkgs.writeShellApplication {
+                  inherit runtimeInputs;
+                  name = "trimaudio";
+                  text = ''
+                    INPUT="$1"
+                    shift
+                    FROM="$1"
+                    shift
+                    TO="$1"
+                    if [ ! -f "$INPUT" ] ; then
+                      echo File not found
+                      exit 1;
+                    fi
+                    if [ -z "$FROM" ] ; then
+                      echo Start time must be provided
+                      exit 1;
+                    fi
+                    if [ -z "$TO" ] ; then
+                      echo End time must be provided
+                      exit 1;
+                    fi
+                    TEMP="tmp-$(basename "$INPUT")"
+                    mv "$INPUT" "$TEMP"
+                    ffmpeg -i "$TEMP" -ss "$FROM" -to "$TO" -c copy "$INPUT"
+                    rm "$TEMP"
+                  '';
+                })
+                (pkgs.writeShellApplication {
+                  inherit runtimeInputs;
+                  name = "getaudio";
+                  text = ''
+                    URL="$1"
+                    shift
+                    NAME="''${1:-output}"
+                    if [ -z "$URL" ] ; then
+                      echo The URL is required
+                      exit 1
+                    fi
+                    yt-dlp -t mp3 --audio-quality 0 "$URL" -o "$NAME.mp3"
+                  '';
+                })
               ];
 
               venvDir = ".venv";
