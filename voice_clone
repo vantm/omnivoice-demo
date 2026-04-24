@@ -6,9 +6,13 @@ import torchaudio
 from datetime import datetime as dt
 
 def read_input():
-    with open("input.txt", "r") as f:
-        text = f.read().strip()
-        return text
+    file_path = "input.txt"
+    with open(file_path, 'r', encoding='utf-8') as f:
+        text = f.read()
+        lines = text.split('\n\n')
+        processed_lines = [line.replace('\n', ' ').strip() for line in lines]
+        result = '\n'.join(processed_lines)
+        return result
 
 def get_ref_audio():
     import sys
